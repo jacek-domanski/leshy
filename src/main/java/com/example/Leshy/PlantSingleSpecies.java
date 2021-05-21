@@ -24,6 +24,11 @@ public class PlantSingleSpecies {
         this.wateringFrequencyDays = wateringFrequencyDays;
     }
 
+    @Override
+    public String toString(){
+        return String.format("Name: %s, Watering frequency: %s days", name, wateringFrequencyDays);
+    }
+
     
 
 }
