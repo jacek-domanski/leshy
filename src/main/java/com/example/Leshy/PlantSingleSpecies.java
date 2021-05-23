@@ -28,7 +28,6 @@ public class PlantSingleSpecies {
     public String toString(){
         return String.format("Name: %s, Watering frequency: %s days", name, wateringFrequencyDays);
     }
-
     
 
 }

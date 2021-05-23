@@ -15,10 +15,7 @@ public class PlantsSpeciesService {
         this.plantSpecies.add(new PlantSingleSpecies("Zamioculcas Zamifolia", 7));
         this.plantSpecies.add(new PlantSingleSpecies("Nepenthes Blood Mary", 3));
         this.plantSpecies.add(new PlantSingleSpecies("Senecio Rowleyanus", 4));
-    }
-
-    public void add(PlantSingleSpecies singleSpecies){
-        this.plantSpecies.add(singleSpecies);
+        this.plantSpecies.add(new PlantSingleSpecies("Ivy", 5));
     }
 
     public List<PlantSingleSpecies> getAllSpecies(){
@@ -26,13 +23,37 @@ public class PlantsSpeciesService {
     }
 
     public PlantSingleSpecies getSingleSpecies(String name){
-        for (PlantSingleSpecies singleSpecies : plantSpecies){
-            if (singleSpecies.getName() == name) {
-                return singleSpecies;
+        try {
+            return 
+                plantSpecies
+                    .stream()
+                    .filter(p -> p.getName().equals(name))
+                    .findFirst()
+                    .get();
+        } catch (Exception e){
+            return new PlantSingleSpecies();
+        }
+    }
+
+    public void add(PlantSingleSpecies singleSpecies){
+        this.plantSpecies.add(singleSpecies);
+    }
+
+    public void delete(String name){
+        plantSpecies.removeIf(p -> p.getName().equals(name));
+    }
+
+    public void update(PlantSingleSpecies singleSpecies) {
+        
+        for (int i=0; i<plantSpecies.size(); i++) {
+            if (plantSpecies.get(i).getName().equals(singleSpecies.getName())) {
+                plantSpecies.set(i, singleSpecies);
+                return;
             }
         }
 
-        return new PlantSingleSpecies();
     }
+
+
     
 }
