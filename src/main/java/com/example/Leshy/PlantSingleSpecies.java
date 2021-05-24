@@ -5,11 +5,14 @@ public class PlantSingleSpecies {
     private int wateringFrequencyDays;
     
     public PlantSingleSpecies() {
+        this.name = "";
+        this.wateringFrequencyDays = 0;
     }
     
-    public PlantSingleSpecies(String name, int wateringFrequencyDays) {
+    public PlantSingleSpecies(String name, int wateringFrequencyDays) throws IllegalArgumentException {
         this.name = name;
-        this.wateringFrequencyDays = wateringFrequencyDays;
+
+        setWateringFrequencyDays(wateringFrequencyDays);
     }
     public String getName() {
         return name;
@@ -20,13 +23,16 @@ public class PlantSingleSpecies {
     public int getWateringFrequencyDays() {
         return wateringFrequencyDays;
     }
-    public void setWateringFrequencyDays(int wateringFrequencyDays) {
+    public void setWateringFrequencyDays(int wateringFrequencyDays) throws IllegalArgumentException {
+        if (wateringFrequencyDays < 0){
+            throw new IllegalArgumentException("wateringFrequencyDays must not be negative");
+        }
         this.wateringFrequencyDays = wateringFrequencyDays;
     }
 
     @Override
     public String toString(){
-        return String.format("Name: %s, Watering frequency: %s days", name, wateringFrequencyDays);
+        return String.format("Name: %s, Watering frequency: %d days", name, wateringFrequencyDays);
     }
     
 
