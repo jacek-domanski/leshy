@@ -2,17 +2,20 @@ package com.example.Leshy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import javax.security.auth.message.callback.PrivateKeyCallback.Request;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;;
 
@@ -60,18 +63,75 @@ public class MongoControllerTest {
 	}
 
 	@Test
-	public void testGetPlantSpecies() throws Exception {
+	public void testGetPlantSpecies() throws Exception { 
+		String expected = 
+			"["
+				+"{"
+					+"\"name\":\"Zamioculcas Zamifolia\","
+					+"\"wateringFrequencyDays\":7"
+				+"},"
+				+"{"
+					+"\"name\":\"Nepenthes Blood Mary\","
+					+"\"wateringFrequencyDays\":3"
+				+"},"
+				+"{"
+					+"\"name\":\"Senecio Rowleyanus\","
+					+"\"wateringFrequencyDays\":4"
+				+"},"
+				+"{"
+					+"\"name\":\"Ivy\","
+					+"\"wateringFrequencyDays\":5"
+				+"}"
+			+"]";
 
+		mvc.perform(get("/plants"))
+			.andExpect(content().string(expected));
+	}//TODO make it pass when all tests are executed
+
+	@Test
+	public void testGetSingleSpeciesExistingSpecies() throws Exception {
+		String expected = "{\"name\":\"Ivy\",\"wateringFrequencyDays\":5}";
+		mvc.perform(get("/plants/Ivy"))
+			.andExpect(content().string(expected));
 	}
 
 	@Test
-	public void testGetSingleSpecies() throws Exception {
-
+	public void testGetSingleSpeciesNonExistingSpecies() throws Exception {
+		String expected = "{\"name\":\"\",\"wateringFrequencyDays\":0}";
+		mvc.perform(get("/plants/Ivyyyy"))
+			.andExpect(content().string(expected));
 	}
 
 	@Test
-	public void testAddPlant() throws Exception {
+	public void testAddPlantValid() throws Exception {
+		PlantSingleSpecies plant = new PlantSingleSpecies("Thangsgiving cactus", 6);
+		ObjectMapper mapper = new ObjectMapper();
+		String body = mapper.writeValueAsString(plant);
 
+		RequestBuilder request = 
+			MockMvcRequestBuilders.post("/plants")
+			.content(body)
+			.contentType(MediaType.APPLICATION_JSON)
+			.accept(MediaType.APPLICATION_JSON);
+
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isOk());
+	}
+
+	@Test
+	public void testAddPlantInvalid() throws Exception {
+		String plant = "dasdas";
+		ObjectMapper mapper = new ObjectMapper();
+		String body = mapper.writeValueAsString(plant);
+
+		RequestBuilder request = 
+			MockMvcRequestBuilders.post("/plants")
+			.content(body)
+			.contentType(MediaType.APPLICATION_JSON)
+			.accept(MediaType.APPLICATION_JSON);
+
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isBadRequest());
 	}
 
 	@Test
