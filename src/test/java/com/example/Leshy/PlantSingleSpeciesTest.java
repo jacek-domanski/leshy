@@ -114,7 +114,69 @@ public class PlantSingleSpeciesTest {
 	@Test
 	public void testEqualsValid() {
 		boolean expected = true;
-		PlantSingleSpecies plant1, plant2 = new PlantSingleSpecies("aa", 1);
-		boolean actual = plant1.equals(plant2)
+		PlantSingleSpecies plant1 = new PlantSingleSpecies("aa", 1);
+		PlantSingleSpecies plant2 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant2);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testEqualsValidSame() {
+		boolean expected = true;
+		PlantSingleSpecies plant1 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant1);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testEqualsValidEmpty() {
+		boolean expected = true;
+		PlantSingleSpecies plant1 = new PlantSingleSpecies();
+		PlantSingleSpecies plant2 = new PlantSingleSpecies();
+		boolean actual = plant1.equals(plant2);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testEqualsInvalid() {
+		boolean expected = false;
+		PlantSingleSpecies plant1 = new PlantSingleSpecies();
+		PlantSingleSpecies plant2 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant2);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testEqualsInvalid2() {
+		boolean expected = false;
+		PlantSingleSpecies plant1 = new PlantSingleSpecies("bb", 1);
+		PlantSingleSpecies plant2 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant2);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testEqualsInvalid3() {
+		boolean expected = false;
+		PlantSingleSpecies plant1 = new PlantSingleSpecies("aa", 2);
+		PlantSingleSpecies plant2 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant2);
+
+		assertEquals(expected, actual);
+	}
+
+	@Test
+	public void testEqualsInvalid4() {
+		boolean expected = false;
+		PlantSingleSpecies plant1 = new PlantSingleSpecies("bb", 2);
+		PlantSingleSpecies plant2 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant2);
+
+		assertEquals(expected, actual);
 	}
 }
