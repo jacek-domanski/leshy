@@ -2,6 +2,7 @@ package com.example.Leshy;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+
+import java.util.ArrayList;
+import java.util.List;;
 
 @ExtendWith(SpringExtension.class)
 @WebMvcTest(MongoController.class)
@@ -64,25 +68,14 @@ public class MongoControllerTest {
 
 	@Test
 	public void testGetPlantSpecies() throws Exception { 
-		String expected = 
-			"["
-				+"{"
-					+"\"name\":\"Zamioculcas Zamifolia\","
-					+"\"wateringFrequencyDays\":7"
-				+"},"
-				+"{"
-					+"\"name\":\"Nepenthes Blood Mary\","
-					+"\"wateringFrequencyDays\":3"
-				+"},"
-				+"{"
-					+"\"name\":\"Senecio Rowleyanus\","
-					+"\"wateringFrequencyDays\":4"
-				+"},"
-				+"{"
-					+"\"name\":\"Ivy\","
-					+"\"wateringFrequencyDays\":5"
-				+"}"
-			+"]";
+		List<PlantSingleSpecies> plantSpecies = new ArrayList<PlantSingleSpecies>();
+		plantSpecies.add(new PlantSingleSpecies("Zamioculcas Zamifolia", 7));
+		plantSpecies.add(new PlantSingleSpecies("Nepenthes Blood Mary", 3));
+		plantSpecies.add(new PlantSingleSpecies("Senecio Rowleyanus", 4));
+		plantSpecies.add(new PlantSingleSpecies("Ivy", 5));
+
+		ObjectMapper mapper = new ObjectMapper();
+		String expected = mapper.writeValueAsString(plantSpecies);
 
 		mvc.perform(get("/plants"))
 			.andExpect(content().string(expected));
@@ -136,7 +129,43 @@ public class MongoControllerTest {
 
 	@Test
 	public void testUpdatePlant() throws Exception {
+		String response = mvc.perform(get("/plants"))
+			.andReturn().
+			getResponse().
+			getContentAsString();
 
+		List<PlantSingleSpecies> originalPlants =
+			new ObjectMapper().readValue(
+				response, 
+				new TypeReference<ArrayList<PlantSingleSpecies>>(){});
+			
+		String name = originalPlants.get(0).getName();
+		int wateringFrequency = originalPlants.get(0).getWateringFrequencyDays() + 1;
+		PlantSingleSpecies expected = new PlantSingleSpecies(name, wateringFrequency);
+		String updatedPlantJson = 
+			new ObjectMapper().writeValueAsString(expected);
+		RequestBuilder request = 
+			MockMvcRequestBuilders.put("/plants")
+			.content(updatedPlantJson)
+			.contentType(MediaType.APPLICATION_JSON)
+			.accept(MediaType.APPLICATION_JSON);
+
+		mvc.perform(request)
+			.andExpect(MockMvcResultMatchers.status().isOk());
+
+		response = mvc.perform(get("/plants"))
+			.andReturn().
+			getResponse().
+			getContentAsString();
+		
+		List<PlantSingleSpecies> actualPlants =
+		new ObjectMapper().readValue(
+			response, 
+			new TypeReference<ArrayList<PlantSingleSpecies>>(){});
+
+		PlantSingleSpecies actual = actualPlants.get(0);
+
+		assertEquals(expected, actual);
 	}
 
 	@Test
