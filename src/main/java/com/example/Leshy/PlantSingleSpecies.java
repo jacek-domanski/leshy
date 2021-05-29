@@ -34,6 +34,21 @@ public class PlantSingleSpecies {
     public String toString(){
         return String.format("Name: %s, Watering frequency: %d days", name, wateringFrequencyDays);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof PlantSingleSpecies)) {
+            return false;
+        } 
+        PlantSingleSpecies other = (PlantSingleSpecies) o;
+
+        return 
+            this.name.equals(other.name) && 
+            this.wateringFrequencyDays == other.wateringFrequencyDays;
+    }
     
 
 }
