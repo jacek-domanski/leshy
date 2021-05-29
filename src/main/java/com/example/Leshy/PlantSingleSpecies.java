@@ -36,18 +36,18 @@ public class PlantSingleSpecies {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (!(o instanceof PlantSingleSpecies)) {
+        if (!(other instanceof PlantSingleSpecies)) {
             return false;
         } 
-        PlantSingleSpecies other = (PlantSingleSpecies) o;
+        PlantSingleSpecies otherCast = (PlantSingleSpecies) other;
 
         return 
-            this.name.equals(other.name) && 
-            this.wateringFrequencyDays == other.wateringFrequencyDays;
+            this.name.equals(otherCast.name) && 
+            this.wateringFrequencyDays == otherCast.wateringFrequencyDays;
     }
     
 

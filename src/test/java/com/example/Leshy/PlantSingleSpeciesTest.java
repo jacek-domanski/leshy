@@ -110,4 +110,11 @@ public class PlantSingleSpeciesTest {
 		actual = plantSingleSpecies.toString();
 		assertEquals(expected, actual);
 	}
+
+	@Test
+	public void testEqualsValid() {
+		boolean expected = true;
+		PlantSingleSpecies plant1, plant2 = new PlantSingleSpecies("aa", 1);
+		boolean actual = plant1.equals(plant2)
+	}
 }
